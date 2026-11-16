@@ -65,13 +65,15 @@ jobs:
       - name: Deploy container
         shell: powershell
         run: |
+          $IMAGE = "ghcr.io/${{ github.repository }}".ToLower()
+          Write-Host "Image target: $IMAGE"
           $ErrorActionPreference = 'SilentlyContinue'
           docker stop web-app
           docker rm web-app
           $ErrorActionPreference = 'Stop'
-          docker pull ghcr.io/${{ github.repository }}:latest
+          docker pull $IMAGE
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          docker run -d --name web-app -p ${{ secrets.APP_PORT }}:80 ghcr.io/${{ github.repository }}:latest
+          docker run -d --name web-app -p ${{ secrets.APP_PORT }}:80 $IMAGE
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Health check

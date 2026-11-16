@@ -14,10 +14,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 20
+          node-version: 24
       - name: Lint HTML & JS
         run: |
           npx htmlhint index.html
@@ -56,9 +56,11 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Log in to GHCR
-        shell: powershell
-        run: |
-          ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy container
         shell: powershell
